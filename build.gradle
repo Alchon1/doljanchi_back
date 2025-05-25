@@ -1,0 +1,67 @@
+plugins {
+	id 'java'
+	id 'war'
+	id 'org.springframework.boot' version '3.3.12'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'kr.doljanchi'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudGcpVersion', "5.11.1")
+	set('springCloudVersion', "2023.0.5")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	
+	implementation 'com.google.cloud:spring-cloud-gcp-starter'
+	implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
+	
+	implementation 'com.google.cloud:google-cloud-storage:2.52.3'
+	
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	
+	implementation(enforcedPlatform("com.oracle.database.jdbc:ojdbc-bom:21.9.0.0"))
+    implementation "com.oracle.database.jdbc:ojdbc11"
+    implementation "com.oracle.database.security:oraclepki"
+    implementation "com.oracle.database.security:osdt_core"
+    implementation "com.oracle.database.security:osdt_cert"
+	
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
